@@ -24,12 +24,21 @@
       "dest": "/staticfiles/$1"
     },
     {
+      "src": "/admin/(.*)",
+      "dest": "/vercel_app.py"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/vercel_app.py"
+    },
+    {
       "src": "/(.*)",
       "dest": "/vercel_app.py"
     }
   ],
   "env": {
     "DJANGO_SETTINGS_MODULE": "bright_credit.settings",
-    "PYTHONPATH": "."
+    "PYTHONPATH": ".",
+    "DEBUG": "False"
   }
 } 
