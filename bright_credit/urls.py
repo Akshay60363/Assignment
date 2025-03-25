@@ -23,7 +23,7 @@ def home(request):
     return redirect('admin:index')
 
 urlpatterns = [
-    path('', home, name='home'),  # Root path redirects to admin
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/', include('credit_service.urls')),
 ]

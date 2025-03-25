@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/wsgi_handler.py",
+      "src": "vercel_app.py",
       "use": "@vercel/python",
       "config": { "maxLambdaSize": "15mb" }
     },
@@ -21,7 +21,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/api/wsgi_handler.py"
+      "dest": "/vercel_app.py"
     }
   ],
   "env": {
