@@ -1,0 +1,17 @@
+{
+  "builds": [
+    {
+      "src": "bright_credit/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "bright_credit/wsgi.py"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "bright_credit.settings"
+  }
+} 
