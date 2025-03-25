@@ -17,3 +17,7 @@ application = get_wsgi_application()
 
 # This is for Vercel deployment
 app = application
+
+# For vercel handler to import
+def handler(request, **kwargs):
+    return app(request.environ, lambda x, y: [])

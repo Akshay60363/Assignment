@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-your-secret-key-her
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']  # Update this with your domain in production
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app', '.now.sh']
 
 
 # Application definition
@@ -96,13 +96,22 @@ WSGI_APPLICATION = 'bright_credit.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# For Vercel deployment - use SQLite for simplicity (since Vercel doesn't support PostgreSQL directly)
+if os.getenv('VERCEL'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='sqlite:///db.sqlite3',
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
 
 
 # Password validation
@@ -139,7 +148,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -149,6 +158,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery Configuration
+# For Vercel deployment, Celery will be dummy implementations
 CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'default'
@@ -157,17 +167,21 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # Credit Service Constants
-TRANSACTION_CSV_PATH = os.path.join(BASE_DIR, 'data/transactions.csv')
-MIN_CREDIT_SCORE_FOR_LOAN = 450
-MIN_ANNUAL_INCOME = Decimal('150000')
-MAX_LOAN_AMOUNT = Decimal('5000')
-MIN_INTEREST_RATE = Decimal('12')
+from decimal import Decimal
+CREDIT_SCORE_DEFAULT = 750
+INCOME_MIN_REQUIRED = Decimal('15000')
+LOW_INTEREST_THRESHOLD = Decimal('10000')
+HIGH_INTEREST_THRESHOLD = Decimal('100000')
+MIN_INTEREST_RATE = Decimal('10')
+MAX_INTEREST_RATE = Decimal('36')
+LATE_PAYMENT_FEE = Decimal('500')
+MIN_DUE_PERCENTAGE = Decimal('5')
 MIN_MONTHLY_INTEREST = Decimal('50')
 MAX_EMI_PERCENTAGE_OF_INCOME = Decimal('20')
 
 # Security Settings
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = False  # Vercel handles SSL
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
