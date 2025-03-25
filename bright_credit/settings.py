@@ -48,7 +48,14 @@ INSTALLED_APPS = [
     'credit_service',
 ]
 
-# Try to add optional apps if they're available
+# Add Vercel adapter
+try:
+    import django_vercel
+    INSTALLED_APPS.append('django_vercel')
+except ImportError:
+    pass
+
+# Optional apps that require additional dependencies
 try:
     import rest_framework
     INSTALLED_APPS.append('rest_framework')
