@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "bright_credit/wsgi.py",
+      "src": "api/wsgi_handler.py",
       "use": "@vercel/python",
       "config": { "maxLambdaSize": "15mb" }
     },
@@ -21,7 +21,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "bright_credit/wsgi.py"
+      "dest": "/api/wsgi_handler.py"
     }
   ],
   "env": {
